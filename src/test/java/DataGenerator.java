@@ -1,6 +1,7 @@
 import com.github.javafaker.Faker;
 import lombok.Data;
 import lombok.Value;
+import lombok.experimental.UtilityClass;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

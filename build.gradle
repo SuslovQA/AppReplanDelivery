@@ -2,14 +2,26 @@ plugins {
     id 'java'
 }
 
-group = 'org.example'
-version = '1.0-SNAPSHOT'
+group 'ru.netology'
+version '1.0-SNAPSHOT'
+
+// используем 11 версию языка
+java {
+    sourceCompatibility = 11
+}
+
+// кодировка файлов (если используете русский язык в файлах)
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.2'
+    testImplementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.9.3'
+    testImplementation group: 'com.codeborne', name: 'selenide', version: '6.19.1'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.42'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.42'
 
@@ -19,11 +31,13 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.9.3'
     implementation group: 'com.github.javafaker', name: 'javafaker', version: '1.0.2'
-    testImplementation group: 'com.codeborne', name: 'selenide', version: '6.19.1'
 }
 
 test {
     useJUnitPlatform()
+    // в тестах, вызывая `gradlew test -Dselenide.headless=true` будем передавать этот параметр в JVM (где его подтянет Selenide)
+    // свойство selenide.headless используется в проектах на основе Selenide для передачи значения параметра в JVM
     systemProperty 'selenide.headless', System.getProperty('selenide.headless')
+    // свойство chromeoptions.prefs используется для задания настроек браузера в проектах на основе Selenide, выключаем менеджер паролей
     systemProperty 'chromeoptions.prefs', System.getProperty('chromeoptions.prefs', "profile.password_manager_leak_detection=false")
 }
