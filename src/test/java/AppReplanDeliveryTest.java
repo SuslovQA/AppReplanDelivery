@@ -1,24 +1,26 @@
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.conditions.Text;
-import com.github.javafaker.Faker;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 
-import java.time.Duration;
-import java.util.Locale;
+import static com.codeborne.selenide.Condition.*;
 
-import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selectors.withText;
+import static com.codeborne.selenide.Selenide.*;
+
 
 
 public class AppReplanDeliveryTest {
 
+    @BeforeAll
+    public static void setupAll() {
+        WebDriverManager.chromedriver().setup();
+        open("http://localhost:9999/");
+    }
+
     @Test
     void shouldSuccessReplan() {
-        open("http://localhost:9999/");
-
         String date1 = DataGenerator.generateDate(7);
         String date2 = DataGenerator.generateDate(14);
 
@@ -29,11 +31,14 @@ public class AppReplanDeliveryTest {
         $(By.xpath("//span[@data-test-id='phone']//input")).setValue(DataGenerator.generatePhone());
         $(By.xpath("//span[@class='checkbox__box']")).click();
         $(".grid-col button").click();
-        $(By.xpath("//div[@data-test-id='success-notification']//div[@class='notification__content']")).shouldBe(Condition.exactText("Встреча успешно запланирована на " + date1));
-        $(".grid-col button").click();
-        $("[data-test-id = 'date'] input").setValue(date2);
-        $(".notification_visible .notification__content").should(Condition.text("У вас уже запланирована встреча на другую дату. Перепланировать?"));
+        $(By.xpath("//div[@data-test-id='success-notification']//div[@class='notification__content']")).shouldBe(visible).shouldBe(text("Встреча успешно запланирована на " + date1));
 
-        $(".button_size_s").click();
+
+        $("[data-test-id='date'] .input__control").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME, Keys.DELETE));
+        $("[data-test-id = 'date'] input").setValue(date2);
+        $(".grid-col button").click();
+        $("[data-test-id='replan-notification'] .notification__content").shouldHave(text("У вас уже запланирована встреча на другую дату. Перепланировать?"));
+        $(withText("Перепланировать")).click();
+        $x("//div[@data-test-id='success-notification']//div[@class='notification__content']").shouldBe(visible).shouldHave(exactText("Встреча успешно запланирована на " + date2));
     }
 }
