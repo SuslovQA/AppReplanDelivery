@@ -19,6 +19,11 @@ class DeliveryTest {
         open("http://localhost:9999");
     }
 
+    @BeforeAll
+    static void setUpAll() {
+        WebDriverManager.chromedriver().setup();
+    }
+
     @Test
     @DisplayName("Should successful plan and replan meeting")
     void shouldSuccessfulPlanAndReplanMeeting() {
