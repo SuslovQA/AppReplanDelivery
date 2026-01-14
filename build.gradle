@@ -6,7 +6,7 @@ group 'ru.netology'
 version '1.0-SNAPSHOT'
 
 java {
-    sourceCompatibility = 11
+    sourceCompatibility = 17
 }
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -16,9 +16,13 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
-    testImplementation 'com.codeborne:selenide:6.19.1'
+    testImplementation platform('org.junit:junit-bom:5.10.0') // BOM для управления версиями
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+    testImplementation 'org.junit.platform:junit-platform-suite'
+
+    testImplementation 'com.codeborne:selenide:7.13.0'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testCompileOnly 'org.projectlombok:lombok:1.18.36'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
